@@ -1,0 +1,125 @@
+I"l+<p>Bitmaps are incredibly handy data structures, and everyone should have one in
+their back pocket. If you don’t have one, feel free to use mine. Feel free to
+offer improvements to mine.</p>
+
+<p>https://github.com/ryanlayer/cs/tree/master/bitmap</p>
+
+<p>Many others have developed methods that probably perform better and have more
+features. My intent is mostly educational. I will try to keep a running list
+here:</p>
+<ul>
+  <li>https://github.com/attractivechaos/klib/pull/59 h/t <a href="https://twitter.com/jomarnz">@jomarnz</a></li>
+  <li>https://github.com/lemire/cbitset h/t <a href="https://twitter.com/brent_p">@brent_p</a></li>
+</ul>
+
+<p>The most straight-forward way to implement a bitmap is with an array of
+unsigned ints. Here I  use 32-bits. Once you have your bag of bits, you need to
+pick the ‘endianness’ of your map, which defines the order bits are stored in.
+You can put the first bit, <code class="language-plaintext highlighter-rouge">b[0]</code>, on the LITTLE end (little-endian) like so:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>0 0 0 0 0 0 0 1
+</code></pre></div></div>
+<p>or on the BIG end (big-endian) like so:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1 0 0 0 0 0 0 0
+</code></pre></div></div>
+
+<p>I use big-endian because, well I don’t know why. Maybe when I was debugging
+this it made more sense when I printed out the bits in big-endian. It doesn’t
+really matter, as long as your bit shifts for getting and setting agree.</p>
+
+<p>To set a bit <code class="language-plaintext highlighter-rouge">i</code>, you divided by 32 to get to the element of the array
+containing that bit then OR that element with a 1 that has has been shifted.
+The MOD gives the local position of that bit in the element and I subtract that
+from 31 to put it on the big end.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>b[i/32] |= 1 &lt;&lt; (31 - (i%32));
+</code></pre></div></div>
+<p>You might think that the 31 above should be a 32 because, you know, 32-bits.
+Consider when <code class="language-plaintext highlighter-rouge">i = 0</code>, which would be <code class="language-plaintext highlighter-rouge">1 &lt;&lt; (32 - 0 ) = 4294967296</code>. 4294967295
+is the max value for an unsigned 32-bit int, so 4294967296 would require 33
+bits.
+Overflow.</p>
+
+<p>To get the bit you jump to the element in the same way, then shift that value
+over until <code class="language-plaintext highlighter-rouge">i</code> is at the least significant bit, then AND that value with 1 to
+mask out any trailing bits.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>b[i/32]) &gt;&gt; (31 - (i%32)) &amp; 1)
+</code></pre></div></div>
+
+<p>To make things easier, my bitmap tracks the number of bits in the map and the
+number of ints needed to represent those bits. This allows me to grow the map
+dynamically. If you want to set a bit that is outside the current range, I grow
+the array exponentially until the bit fits. If you want to get a bit that is
+outside the current range I just return zero instead of growing the map.  There
+are also functions to save and load maps from disk.</p>
+
+<p>Start by initializing the bitmap with some starting size, this can be just a
+guess on how big it will bet but don’t worry if it is too small, the map will
+grow as needed. Then set and get to your heart’s content. When you are done you
+can save it for later or just destroy it. If you do have a saved map, then load
+it and you are good to go.</p>
+
+<p>Obvious additions to the library are bitwise operations (AND, OR, etc.),
+compressed storage, and on-demand loading from disk.</p>
+
+<h1 id="tldr">TL;DR</h1>
+
+<p>Function singnatures:</p>
+
+<figure class="highlight"><pre><code class="language-c" data-lang="c"><span class="k">struct</span> <span class="n">bit_map</span> <span class="o">*</span><span class="nf">bit_map_init</span><span class="p">(</span><span class="kt">uint64_t</span> <span class="n">bits</span><span class="p">);</span>
+<span class="k">struct</span> <span class="n">bit_map</span> <span class="o">*</span><span class="nf">bit_map_load</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">file_name</span><span class="p">);</span>
+<span class="kt">void</span> <span class="nf">bit_map_store</span><span class="p">(</span><span class="k">struct</span> <span class="n">bit_map</span> <span class="o">*</span><span class="n">b</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">file_name</span><span class="p">);</span>
+<span class="kt">void</span> <span class="nf">bit_map_destroy</span><span class="p">(</span><span class="k">struct</span> <span class="n">bit_map</span> <span class="o">**</span><span class="n">b</span><span class="p">);</span>
+<span class="kt">void</span> <span class="nf">bit_map_set</span><span class="p">(</span><span class="k">struct</span> <span class="n">bit_map</span> <span class="o">*</span><span class="n">b</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="n">i</span><span class="p">);</span>
+<span class="kt">uint32_t</span> <span class="nf">bit_map_get</span><span class="p">(</span><span class="k">struct</span> <span class="n">bit_map</span> <span class="o">*</span><span class="n">b</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="n">q</span><span class="p">);</span></code></pre></figure>
+
+<p>A sample program:</p>
+
+<figure class="highlight"><pre><code class="language-c" data-lang="c"><span class="cp">#include "bitmap.h"
+</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">uint64_t</span> <span class="n">starting_size</span> <span class="o">=</span> <span class="mi">8</span><span class="p">;</span>
+
+    <span class="k">struct</span> <span class="n">bit_map</span> <span class="o">*</span><span class="n">b</span> <span class="o">=</span> <span class="n">bit_map_init</span><span class="p">(</span><span class="n">starting_size</span><span class="p">);</span>
+
+    <span class="n">printf</span><span class="p">(</span><span class="s">"b[0]: %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">bit_map_get</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="mi">0</span><span class="p">));</span>
+
+    <span class="n">printf</span><span class="p">(</span><span class="s">"b[0] = 1</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="n">bit_map_set</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+
+    <span class="n">printf</span><span class="p">(</span><span class="s">"b[0]: %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">bit_map_get</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="mi">0</span><span class="p">));</span>
+
+    <span class="n">printf</span><span class="p">(</span><span class="s">"b[1000] = 1</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="n">bit_map_set</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="mi">1000</span><span class="p">);</span>
+
+    <span class="n">printf</span><span class="p">(</span><span class="s">"b[999]: %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">bit_map_get</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="mi">999</span><span class="p">));</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"b[1000]: %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">bit_map_get</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="mi">1000</span><span class="p">));</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"b[9000]: %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">bit_map_get</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="mi">9000</span><span class="p">));</span>
+
+    <span class="n">bit_map_store</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="s">"bitmap.data"</span><span class="p">);</span>
+
+    <span class="n">bit_map_destroy</span><span class="p">(</span><span class="o">&amp;</span><span class="n">b</span><span class="p">);</span>
+
+    <span class="k">struct</span> <span class="n">bit_map</span> <span class="o">*</span><span class="n">d</span> <span class="o">=</span> <span class="n">bit_map_load</span><span class="p">(</span><span class="s">"bitmap.data"</span><span class="p">);</span>
+
+    <span class="n">printf</span><span class="p">(</span><span class="s">"d[0]: %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">bit_map_get</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="mi">0</span><span class="p">));</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"d[999]: %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">bit_map_get</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="mi">999</span><span class="p">));</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"d[1000]: %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">bit_map_get</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="mi">1000</span><span class="p">));</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"d[9000]: %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">bit_map_get</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="mi">9000</span><span class="p">));</span>
+
+    <span class="n">bit_map_destroy</span><span class="p">(</span><span class="o">&amp;</span><span class="n">d</span><span class="p">);</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>Program output:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>b[0]: 0
+b[0] = 1
+b[0]: 1
+b[1000] = 1
+b[999]: 0
+b[1000]: 1
+b[9000]: 0
+d[0]: 1
+d[999]: 0
+d[1000]: 1
+d[9000]: 0
+</code></pre></div></div>
+:ET

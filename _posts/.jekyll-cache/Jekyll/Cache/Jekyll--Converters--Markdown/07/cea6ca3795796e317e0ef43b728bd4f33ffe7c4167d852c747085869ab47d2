@@ -1,0 +1,62 @@
+I"ž
+<p>As part of the <a href="https://www.covid19mobility.org/">COVID-19 Mobility Data Network</a> our lab, along
+with the <a href="https://larremorelab.github.io/">Dan Larremore</a> at CU and 
+<a href="https://www.stat.colostate.edu/~bailey/">Bailey Fosdick</a> at CSU, is using mobility data from
+<a href="https://dataforgood.fb.com/tools/disease-prevention-maps/">Facebook Data for
+Good</a> to help state
+and local governments monitor activey in their jurisdicitons while stay-at-home
+orders are in place and as reopening begins.</p>
+
+<p>We are currently working directly with:</p>
+<ul>
+  <li>Boulder County, CO</li>
+  <li>Arapahoe County, CO</li>
+  <li>Denver, CO</li>
+  <li>Salt Lake County, UT</li>
+  <li>University of Colorado, Boulder</li>
+</ul>
+
+<p>Facebook provides aggregaed an annonmized user density data three times per day
+for tiles that range in size from 2km to 0.6km squater.</p>
+<center>
+<img src="https://raw.githubusercontent.com/ryanlayer/COvid19/master/imgs/Boulder_example_tile.png" />
+</center>
+<p>From this data we have developed metrics that measure activity trends.  Some of
+our metrics include:</p>
+
+<ul>
+  <li>A weekend score measures the differences between weekday and weekend activity.
+Ideally, if people are staying home and not working, there should not be a
+difference.</li>
+</ul>
+<center>
+<img src="https://raw.githubusercontent.com/ryanlayer/COvid19/master/imgs/colorado_example_tile_ws_diffs.png" />
+</center>
+<ul>
+  <li>A slip score, which measures the difference in activity between adjacent
+weeks. This score should be near zero during a stay-at-home order.</li>
+</ul>
+<center>
+<img src="https://raw.githubusercontent.com/ryanlayer/COvid19/master/imgs/coloreado_example_slip_scores.png" />
+</center>
+<ul>
+  <li>A hot-spot score, which measures the difference between current activity and
+activity during the first week of the stay-at-home order.</li>
+</ul>
+<center>
+<img src="https://raw.githubusercontent.com/ryanlayer/COvid19/master/imgs/colorado_hotspot_scores.png" />
+</center>
+
+<p>We are also using models to decompose the data into seasonal (night/day, weekday/weekend) and trend values.</p>
+<center>
+<img src="https://github.com/ryanlayer/COvid19/blob/master/imgs/colorado_example_season_trend_split.png?raw=true" />
+</center>
+
+<p>To help explore these data, we are developing an interactive browser using 
+<a href="https://plotly.com/dash/">plotly dash</a>. Here is a quick demo of our data browser:</p>
+
+<iframe width="569" height="320" src="https://www.youtube.com/embed/2xV9VDY7vG8" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen=""></iframe>
+
+<p>Full details can be found at our <a href="https://github.com/ryanlayer/COvid19">github repo</a>.</p>
+
+:ET

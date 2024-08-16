@@ -1,0 +1,50 @@
+I"�
+<p>Link: <a href="https://cu.taleo.net/careersection/2/jobdetail.ftl?job=12752&amp;lang=en&amp;sns_id=mailto#.WpRJvVjPERU.mailto">CU Careers#12752</a>.</p>
+
+<p>The Layer Laboratory in the BioFrontiers Institute and the Department of
+Computer Science seeks a Post Doc to develop new algorithms, computational
+approaches, and data visualization techniques that empower researchers to solve
+the genetic basis of human diseases.</p>
+
+<p>We are looking for a talented, highly motivated, independent scientist with
+strong programming skills. We are a new lab and are looking for a passionate
+scientist to join the team.</p>
+
+<p>The successful candidate will join a dynamic, growing team of scientists,
+software developers, and clinicians working to integrate computational genomics
+into health care. Our research develops open-source methods that enable
+efficient exploration of large and diverse genetic databases. Ongoing projects
+include:</p>
+
+<p><a href="https://github.com/arq5x/lumpy-sv">LUMPY</a>: mining whole genome sequencing data to identify genetic variants</p>
+
+<p><a href="https://github.com/ryanlayer/gqt">Genotype query tools</a>: a compressed index
+and query interface for exploring large-scale genotype datasets</p>
+
+<p><a href="https://github.com/ryanlayer/giggle">GIGGLE</a>: a search engine for genome annotations</p>
+
+<p><a href="https://github.com/ryanlayer/stix">STIX</a>: mining thousands of genomes to find structural variant population frequencies</p>
+
+<p>Responsibilities:</p>
+<ul>
+  <li>Develop new algorithms, software, and visualization tools for genetics disease research</li>
+  <li>Analyze genomic data using command-line and web-based computational tools to discover the genetic basis for disease.</li>
+  <li>Collaborate with clinicians, software developers, and analysts across multiple academic departments and initiatives to ensure  efficient project completion and rigorous research outcomes.</li>
+</ul>
+
+<p>Qualifications</p>
+
+<p>Minimum:</p>
+<ul>
+  <li>Ph.D. in computer science, mathematics, bioinformatics or a related discipline
+Proficient in a compiled language (C or C++) and a scripting language</li>
+  <li>Ability to work with large datasets in a variety of settings including the use of both web-based and command line tools in a Linux environment</li>
+  <li>Collaborative – able to work interactively on projects with a variety of researchers, software developers, and medical professionals to enable discovery of disease-causing genetic variants</li>
+  <li>Articulate – able to discuss research design and results effectively with clinical, research and technical team.</li>
+</ul>
+
+<p>Desired:</p>
+<ul>
+  <li>Previous research experience in genetics, medical genetics and/or genotype/phenotype association analyses is a plus, but not required.</li>
+</ul>
+:ET

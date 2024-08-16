@@ -1,0 +1,60 @@
+<p>Here is s short a presentation about SV-plaudit on YouTube (2m 16s)
+<a href="https://www.youtube.com/watch?v=ono8kHMKxDs"><img src="https://img.youtube.com/vi/ono8kHMKxDs/0.jpg" alt="GIGGLE" /></a></p>
+
+<p>Links:</p>
+<ul>
+  <li><a href="https://github.com/jbelyeu/SV-plaudit">Source code</a></li>
+  <li><a href="https://www.youtube.com/edit?o=U&amp;video_id=phD-GdkOwiY">Setup video</a></li>
+  <li><a href="https://www.biorxiv.org/content/early/2018/02/14/265058">Preprint</a></li>
+</ul>
+
+<p>Detection structural variants (SVs) is hard, and automated filters still
+struggle to differentiate between true positives and false positives.  While
+the human eye is quite good at spotting spurious SV calls, curating more than a
+handle full of calls with current visualization tools is clumsy and
+error-prone.</p>
+
+<p>SV-plaudit aims to scale manual inspection to thousands of SVs so that you can
+curate every variant in your call set. We accomplish this with a visualization
+method that reduces the time required to evaluate and SV to seconds and a
+cloud-based scoring system that manages the input from many users.</p>
+
+<p>Checkout out the <a href="https://www.youtube.com/edit?o=U&amp;video_id=phD-GdkOwiY">setup video</a>
+and the following commands to set up your AWS environment and deploying an
+example SV-plaudit project. Complete details are on the 
+<a href="https://github.com/jbelyeu/SV-plaudit">GitHub site</a>.</p>
+
+<p>Get the code:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone --recursive https://github.com/jbelyeu/SV-plaudit.git
+cd SV-plaudit
+</code></pre></div></div>
+
+<p>Get sample data (this could take 20 or more mintues, depending on network speed):</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>samtools view -b ftp://ftp-trace.ncbi.nih.gov/1000genomes/ftp/phase3/data/NA12892/high_coverage_alignment/NA12892.mapped.ILLUMINA.bwa.CEU.high_coverage_pcr_free.20130906.bam 22 &gt; NA12892.22.bam
+samtools view -b ftp://ftp-trace.ncbi.nih.gov/1000genomes/ftp/phase3/data/NA12891/high_coverage_alignment/NA12891.mapped.ILLUMINA.bwa.CEU.high_coverage_pcr_free.20130906.bam 22 &gt; NA12891.22.bam
+samtools view -b ftp://ftp-trace.ncbi.nih.gov/1000genomes/ftp/phase3/data/NA12878/high_coverage_alignment/NA12878.mapped.ILLUMINA.bwa.CEU.high_coverage_pcr_free.20130906.bam 22 &gt; NA12878.22.bam
+samtools index NA12878.22.bam
+samtools index NA12891.22.bam
+samtools index NA12892.22.bam
+bcftools view -c 1 -s NA12878 ftp://ftp-trace.ncbi.nih.gov/1000genomes/ftp/phase3/integrated_sv_map/ALL.wgs.integrated_sv_map_v2.20130502.svs.genotypes.vcf.gz &gt; NA12878.22.vcf
+</code></pre></div></div>
+
+<p>Generate an image for each SV:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mkdir sv_imgs
+Samplot/src/samplot_vcf.sh -S Samplot/src/samplot.py -o sv_imgs -v NA12878.22.vcf NA12878.22.bam NA12891.22.bam NA12892.22.bam
+</code></pre></div></div>
+
+<p>Stage the AWS environment and upload the data:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>python PlotCritic/setup.py -p NA12878_trio_22 -e ryan@layerlab.org -a YOUR_AWS_ACCESS_KEY_ID -s "YOUR_AWS_SECRET_ACCESS_KEY"
+python upload.py -d sv_imgs -c PlotCritic/config.json
+</code></pre></div></div>
+
+<p>At this point you will get an eamil with the URL to the scoring web site and
+temporary password for your administrator account. When you first signin you
+need to reset your passowrd, then you can invite other users and begin
+evaluating varaints.</p>
+
+<p>Once scores have been collected, results can be retrieved as either a tex file or annotated VCF.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>python PlotCritic/retrieval.py -c PlotCritic/config.json &gt; retrieved_data.csv
+python annotate.py -s retrieved_data.mod.csv -v NA12878.22.vcf -a NA12878.22.score.vcf -o mean -n 1,0,1
+</code></pre></div></div>

@@ -1,0 +1,17 @@
+---
+layout: post
+title:  "The structural variation landscape in 492 Atlantic salmon genomes"
+date:   2020-10-14 00:00:00 -070/
+categories: 
+comments: false
+---
+
+
+Our paper on SVs in Salmon was finally published in [Nature Communications](https://www.nature.com/articles/s41467-020-18972-x/figures/1)!
+
+One little blip on the SV size / count spectrum lead to a connection between
+active transposable elements and domestication. 
+
+![Deletions](/assets/2020-10-14-SVs-in-492-Salmon/me.png)
+
+More to come from us in the animal SV world.

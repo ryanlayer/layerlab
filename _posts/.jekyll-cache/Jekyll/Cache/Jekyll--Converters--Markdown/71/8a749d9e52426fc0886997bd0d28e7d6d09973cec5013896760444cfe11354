@@ -1,0 +1,73 @@
+I"{%<p>For reasons that now escape me, I stopped using <code class="language-plaintext highlighter-rouge">strtok</code> to parse strings in
+C. I can only guess that it was because <code class="language-plaintext highlighter-rouge">strtok</code> changes the original string,
+making it difficult to re-parse, and that alternating between delimiters was
+hard. These may no longer be issues with <code class="language-plaintext highlighter-rouge">strok</code>, I have may have been using
+<code class="language-plaintext highlighter-rouge">strtok</code> incorrectly, and there may be better functions I should have used.</p>
+
+<p>In any case, here is <code class="language-plaintext highlighter-rouge">scan_s</code>. It is simple, does not modify the base string,
+and lends itself well to the nested parsing of different delimiters. A 
+slightly annoying part of <code class="language-plaintext highlighter-rouge">scan_s</code> is that <strong>YOU MUST</strong> increment <code class="language-plaintext highlighter-rouge">s</code> (the
+index to the start of your token). <code class="language-plaintext highlighter-rouge">s = e + 1</code> works in most cases.</p>
+
+<figure class="highlight"><pre><code class="language-c" data-lang="c"><span class="kt">int</span> <span class="nf">scan_s</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">str</span><span class="p">,</span> <span class="kt">int</span> <span class="n">str_len</span><span class="p">,</span> <span class="kt">int</span> <span class="o">*</span><span class="n">s</span><span class="p">,</span> <span class="kt">int</span> <span class="o">*</span><span class="n">e</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="n">delim</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">*</span><span class="n">e</span> <span class="o">==</span> <span class="n">str_len</span><span class="p">)</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+    <span class="k">for</span> <span class="p">(</span><span class="o">*</span><span class="n">e</span> <span class="o">=</span> <span class="o">*</span><span class="n">s</span><span class="p">;</span> <span class="o">*</span><span class="n">e</span> <span class="o">&lt;=</span> <span class="n">str_len</span><span class="p">;</span> <span class="o">*</span><span class="n">e</span><span class="o">+=</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">((</span><span class="n">str</span><span class="p">[</span><span class="o">*</span><span class="n">e</span><span class="p">]</span> <span class="o">==</span> <span class="n">delim</span><span class="p">)</span> <span class="o">||</span> <span class="p">(</span><span class="o">*</span><span class="n">e</span> <span class="o">==</span> <span class="n">str_len</span><span class="p">))</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="o">*</span><span class="n">e</span> <span class="o">-</span> <span class="o">*</span><span class="n">s</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="o">-</span><span class="mi">2</span><span class="p">;</span>
+<span class="p">}</span></code></pre></figure>
+
+<h3 id="arguments">Arguments</h3>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">str</code> is a pointer to the beginning of your string. More specifically, it is a
+pointer to the position first character in some string that you want to parse.</li>
+  <li><code class="language-plaintext highlighter-rouge">str_len</code> is the length of that string. This does not have to be the full
+string, just the bit you care about.</li>
+  <li><code class="language-plaintext highlighter-rouge">s</code> the index of the start of your token</li>
+  <li><code class="language-plaintext highlighter-rouge">e</code> the index of the end of your token</li>
+  <li><code class="language-plaintext highlighter-rouge">delim</code> is the character that you want to delmit your string</li>
+</ul>
+
+<h3 id="return-values">Return values</h3>
+<ul>
+  <li>length of your token</li>
+  <li><code class="language-plaintext highlighter-rouge">-1</code> when you reach the end of the string</li>
+  <li><code class="language-plaintext highlighter-rouge">-2</code> when something goes wrong</li>
+</ul>
+
+<h3 id="example">Example</h3>
+
+<figure class="highlight"><pre><code class="language-c" data-lang="c"><span class="kt">char</span> <span class="o">*</span><span class="n">test</span><span class="o">=</span><span class="s">"this;string;has,two,different;delimiter"</span><span class="p">;</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">str_len</span> <span class="o">=</span> <span class="n">strlen</span><span class="p">(</span><span class="n">test</span><span class="p">);</span>
+    <span class="kt">int</span> <span class="n">tok_len</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">s</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">e</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="kt">char</span> <span class="o">*</span><span class="n">tok</span><span class="p">;</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"%d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">str_len</span><span class="p">);</span>
+    <span class="k">while</span> <span class="p">(</span><span class="n">scan_s</span><span class="p">(</span><span class="n">test</span><span class="p">,</span> <span class="n">str_len</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">s</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">e</span><span class="p">,</span> <span class="sc">';'</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="kt">int</span> <span class="n">ss</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">ee</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="k">while</span> <span class="p">(</span><span class="n">scan_s</span><span class="p">(</span><span class="n">test</span> <span class="o">+</span> <span class="n">s</span><span class="p">,</span> <span class="n">e</span><span class="o">-</span><span class="n">s</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ss</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ee</span><span class="p">,</span> <span class="sc">','</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="p">)</span> <span class="p">{</span>
+            <span class="n">tok</span> <span class="o">=</span> <span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span> <span class="n">malloc</span><span class="p">((</span><span class="n">ee</span><span class="o">-</span><span class="n">ss</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">char</span><span class="p">));</span>
+            <span class="kt">char</span> <span class="o">*</span><span class="n">dst</span> <span class="o">=</span> <span class="n">stpncpy</span><span class="p">(</span><span class="n">tok</span><span class="p">,</span> <span class="n">test</span> <span class="o">+</span> <span class="n">s</span> <span class="o">+</span> <span class="n">ss</span><span class="p">,</span> <span class="n">ee</span><span class="o">-</span><span class="n">ss</span><span class="p">);</span>
+            <span class="n">tok</span><span class="p">[</span><span class="n">ee</span><span class="o">-</span><span class="n">ss</span><span class="p">]</span><span class="o">=</span><span class="sc">'\0'</span><span class="p">;</span>
+            <span class="n">printf</span><span class="p">(</span><span class="s">"%d %s</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">ee</span><span class="o">-</span><span class="n">ss</span><span class="p">,</span> <span class="n">tok</span><span class="p">);</span>
+            <span class="n">ss</span> <span class="o">=</span> <span class="n">ee</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+            <span class="n">free</span><span class="p">(</span><span class="n">tok</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">e</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span></code></pre></figure>
+
+<h3 id="result">Result</h3>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>40
+4 this
+6 string
+3 has
+3 two
+9 different
+10 delimiters
+</code></pre></div></div>
+:ET

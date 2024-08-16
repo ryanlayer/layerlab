@@ -1,0 +1,13 @@
+---
+layout: post
+title:  "Searching thousands of genomes to classify somatic and novel structural variants using STIX"
+date:   2022-06-10 00:00:00 -070/
+categories: 
+comments: false
+---
+
+Our STIX method to estimate the population allele frequency of structural
+variants (SVs) was recently published in [Nature Methods](https://www.nature.com/articles/s41592-022-01423-4). The basic idea of STIX is that we can get better frequency estimates by searching for alignments that support the existence of a specific variant. We are particularly interested in using STIX to differentiate between common neutral SVs and those that drive diseases such as cancer. A STIX query can shed some light on this question. If a given SV has evidence in many samples, it is unlikely to drive tumor growth. If there is no evidence supporting an SV across all samples, it is rare and should be further analyzed for pathogenicity.
+
+The source for STIX is free and open-source and can be foud
+[here](https://github.com/ryanlayer/stix).

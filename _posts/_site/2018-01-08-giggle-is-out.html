@@ -1,0 +1,51 @@
+<p>First the links:</p>
+<ul>
+  <li><a href="https://github.com/ryanlayer/giggle">Source code</a></li>
+  <li><a href="https://www.youtube.com/watch?v=yw8H7PhtZoA">Video describing GIGGLE</a></li>
+  <li><a href="https://www.nature.com/articles/nmeth.4556">Nature Methods paper</a></li>
+  <li><a href="https://www.biorxiv.org/content/early/2017/06/29/157735">Preprint</a></li>
+</ul>
+
+<p>GIGGLE is a genomics search engine that identifies and ranks the significance
+of shared genomic loci between query features and thousands of genome interval
+files. If you, for example, were interested in understanding the genetics of
+Rheumatoid Arthritis, then you could use the genome wide-significant SNPs from
+a <a href="wget
+https://www.nature.com/nature/journal/v518/n7539/extref/nature13835-s1.xls">GWAS</a> to
+search a database of <a href="http://www.roadmapepigenomics.org/">Roadmap Epigenomics</a>
+(specifically the tissue/<a href="http://compbio.mit.edu/ChromHMM/">CHROMHMM</a> predicted
+state annotations).</p>
+
+<p>Here are the results visualized in a heat map where the short axis give the
+CHROHMM states, and the long axis gives the tissues. The color of each cell
+corresponds to the GIGGLE score of the query (Rheumatoid Arthritis SNPs) and a
+database file (tissue/genomic state, e.g., heart muscle enhancer). Darker red
+means a more positive relationship and darker blue means more negative
+relationship.</p>
+
+<p><img src="/assets/RA_gwas_rme.png" alt="RA GWAS vs RME" height="800px" /><br /> (From Fig2b)</p>
+
+<p>As you can see, the SNPs cluster in T-cells, B-cells, and the Thymus, which is
+a signature of an autoimmune disorder. While we know that Rheumatoid Arthritis
+is an autoimmune disorder, we did not always know this. You can imagine how
+insightful this type of search would be for new diseases or ones where the role
+of the immune system is underappreciated.</p>
+
+<p>The steps for recreating this results are
+<a href="https://github.com/ryanlayer/giggle/blob/master/experiments/gwas/README.md">HERE</a>.</p>
+
+<p>Under the hood, GIGGLE is a B+Tree that was inspired by the <a href="http://www.vldb.org/conf/1990/P001.PDF">Time
+Index</a></p>
+
+<p>An example of a GIGGLE index of 3 annotation files (A, B, and C) is here:</p>
+
+<p><img src="/assets/giggle_index.png" alt="GIGGLE index" height="400px" /></p>
+
+<p>Each interval corresponds to two keys in the tree, one for a start and one for
+the end. Each key in a leaf node corresponds to a list of interval starts (they
+have the “+” sign), and interval ends (they have the “-“ sign). To search for
+overlaps in the region [7,11], we search the tree for 7 (marked in green) and
+11 (marked in red), then scan the keys between those two keys collecting new
+intervals.  In reality, it is a bit more complicated, see the paper for full
+details.</p>
+
