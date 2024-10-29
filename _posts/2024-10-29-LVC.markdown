@@ -1,0 +1,26 @@
+---
+layout: post
+title:  "Layer Lab and Codebreaker Pitch Win Lab Benture Challenge"
+date:   2024-10-29 00:00:00 -070/
+categories: 
+comments: false
+---
+
+The Layer Lab and Codebreaker have teamed up to win $125,000 in startup funding from
+[CU's Lab Venture Challenge](https://www.colorado.edu/venturepartners/2024/10/28/internal-news/1m-awarded-university-colorado-innovators) to
+help Codebreaker further develop its ground-breaking high-throughput genomic variant fuctional screen.
+
+
+Genetic testing is a critical tool in modern medicine, helping us understand undiagnosed disorders and plan effective cancer therapies. Unfortunately, our ability to sequence genomes far exceeds our capacity to understand the connection between genetic variations and disease. As a result, most genetic variations we observe in a patient’s genome remain unclassified, leading us to label them as Variants of Unknown Significance (VUS). According to the primary public repository of genetic variation observed in patients, [ClinVar](https://www.ncbi.nlm.nih.gov/clinvar/), the majority of variations are classified as VUS, and this number continues to increase.
+
+
+![VUS](/assets/2024-10-29-LVC/bars.png)
+
+![VUSGrowth](/assets/2024-10-29-LVC/line.png)
+
+
+Currently, our only options for determining whether a VUS is pathogenic or benign are either to gather substantial patient evidence or to study the variant in an animal model. However, both methods are time-consuming and cannot scale to accommodate the vast number of VUS that require evaluation.
+
+Codebreaker offers a new path forward. Using a novel high-throughput genomic variation functional screen, we can precisely edit thousands of individual cells and then apply functional assays (e.g., growth assays for cancer-related variants) and single-cell RNA sequencing to evaluate the impact of these variants. With this technology, Codebreaker aims to help clinical genetics labs reclassify VUS, ultimately enabling more patients to receive accurate diagnoses and the treatments they need.
+
+Codebreaker and the Layer Lab will use LVC funding to develop software tools that identify the most promising Variants of Unknown Significance (VUS) for a given disease. These variants will then be tested using Codebreaker’s high-throughput genomic variation functional screen, with results analyzed for actionable insights.
