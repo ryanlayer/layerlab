@@ -14,9 +14,9 @@ help Codebreaker further develop its ground-breaking high-throughput genomic var
 Genetic testing is a critical tool in modern medicine, helping us understand undiagnosed disorders and plan effective cancer therapies. Unfortunately, our ability to sequence genomes far exceeds our capacity to understand the connection between genetic variations and disease. As a result, most genetic variations we observe in a patient’s genome remain unclassified, leading us to label them as Variants of Unknown Significance (VUS). According to the primary public repository of genetic variation observed in patients, [ClinVar](https://www.ncbi.nlm.nih.gov/clinvar/), the majority of variations are classified as VUS, and this number continues to increase.
 
 
-![VUS](/assets/2024-10-29-LVC/bars.png)
+![VUS](/layerlab/assets/2024-10-29-LVC/bars.png)
 
-![VUSGrowth](/assets/2024-10-29-LVC/line.png)
+![VUSGrowth](/layerlab/assets/2024-10-29-LVC/line.png)
 
 
 Currently, our only options for determining whether a VUS is pathogenic or benign are either to gather substantial patient evidence or to study the variant in an animal model. However, both methods are time-consuming and cannot scale to accommodate the vast number of VUS that require evaluation.
